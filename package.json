@@ -1,0 +1,25 @@
+{
+  "name": "js-ipfs-empty-directory-test",
+  "version": "1.0.0",
+  "description": "Testing issues with `ipfs.ls('/ipfs/bafyaabakaieac')`",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RangerMauve/js-ipfs-empty-directory-test.git"
+  },
+  "author": "rangermauve <ranger@mauve.moe> (https://mauve.moe/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/RangerMauve/js-ipfs-empty-directory-test/issues"
+  },
+  "homepage": "https://github.com/RangerMauve/js-ipfs-empty-directory-test#readme",
+  "dependencies": {
+    "go-ipfs": "^0.12.0",
+    "ipfs-http-client": "^56.0.1",
+    "ipfsd-ctl": "^10.0.6",
+    "tape": "^5.5.2"
+  }
+}
