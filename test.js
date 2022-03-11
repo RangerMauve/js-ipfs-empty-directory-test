@@ -4,9 +4,10 @@ const test = require('tape')
 const ipfsHttpModule = require('ipfs-http-client')
 const Ctl = require('ipfsd-ctl')
 const ipfsBin = require('go-ipfs').path()
+const { CID } = require('multiformats/cid')
 
 const EMPTY_DIR_CID = 'bafyaabakaieac'
-const EXAMPLE_DIR = '/example'
+const EXAMPLE_DIR = '/test-dirs/example/'
 
 const factory = Ctl.createFactory({
   type: 'go',
@@ -33,14 +34,14 @@ async function getInstance () {
   return ipfsd.api
 }
 
-test.only('Listing an empty dir should show it as a directory', async (t) => {
+test('Listing an empty dir should show it as a directory', async (t) => {
   let ipfs = null
   try {
     ipfs = await getInstance()
 
     t.pass('Initialized IPFS')
 
-    const list = await collect(ipfs.ls(EMPTY_DIR_CID))
+    const list = await collect(ipfs.ls(`/ipfs/${EMPTY_DIR_CID}`))
 
     t.deepEqual(list, [], 'Got empty listing')
 
@@ -48,8 +49,29 @@ test.only('Listing an empty dir should show it as a directory', async (t) => {
     if (fileEntry) {
       t.notEqual(fileEntry.type, 'file', 'Even if there is an entry, it should not be a file')
     }
+  } finally {
+    try {
+      if (ipfs) await ipfs.stop()
+    } catch (e) {
+      console.error('Could not stop', e)
+      // Whatever
+    }
+  }
+})
 
-    await ipfs.files.cp(`/ipfs/${EMPTY_DIR_CID}/`, EXAMPLE_DIR)
+test('Copying an empty dir with MFS should be a no-op', async (t) => {
+  let ipfs = null
+  try {
+    ipfs = await getInstance()
+
+    t.pass('Initialized IPFS')
+
+    const cid = CID.parse(EMPTY_DIR_CID)
+
+    await ipfs.files.cp(cid, EXAMPLE_DIR, {
+      parents: true,
+      cidVersion: 1
+    })
 
     t.ok('Able to copy empty dir CID')
 
